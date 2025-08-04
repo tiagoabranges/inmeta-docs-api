@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DocumentModel, DocumentEntity } from './schemas/document.schema';
 import { Model } from 'mongoose';
+import { CreateDocumentDto } from './dto/create-document.dto';
+import { UpdateDocumentDto } from './dto/update-document.dto';
 
 @Injectable()
 export class DocumentService {
@@ -10,8 +12,11 @@ export class DocumentService {
     private readonly documentModel: Model<DocumentEntity>,
   ) {}
 
-  async create(data: Partial<DocumentModel>): Promise<DocumentModel> {
-    const created = new this.documentModel(data);
+  async create(data: CreateDocumentDto): Promise<DocumentModel> {
+    const created = new this.documentModel({
+      ...data,
+      status: data.status || 'pendente',
+    });
     return created.save();
   }
 
@@ -36,5 +41,56 @@ export class DocumentService {
       .populate('employeeId')
       .populate('documentTypeId')
       .exec();
+  }
+
+  async updateStatus(id: string, status: UpdateDocumentDto['status']) {
+    return this.documentModel.findByIdAndUpdate(id, { status }, { new: true });
+  }
+
+  async delete(id: string) {
+    return this.documentModel.findByIdAndDelete(id);
+  }
+
+  async getStatusByEmployee(employeeId: string) {
+    const documents = await this.documentModel
+      .find({ employeeId })
+      .populate('documentTypeId')
+      .exec();
+
+    const sentTypes = documents
+      .filter((doc) => doc.status === 'enviado')
+      .map((doc) => {
+        if (
+          typeof doc.documentTypeId === 'object' &&
+          'name' in doc.documentTypeId
+        ) {
+          return doc.documentTypeId.name;
+        }
+        return null;
+      })
+      .filter((name): name is string => !!name);
+
+    const allTypes = documents
+      .map((doc) => {
+        if (
+          typeof doc.documentTypeId === 'object' &&
+          'name' in doc.documentTypeId
+        ) {
+          return doc.documentTypeId.name;
+        }
+        return null;
+      })
+      .filter((name): name is string => !!name);
+
+    const uniqueSent = [...new Set(sentTypes)];
+    const uniqueAll = [...new Set(allTypes)];
+
+    const pending = uniqueAll.filter((name) => !uniqueSent.includes(name));
+
+    return {
+      employeeId,
+      sent: uniqueSent,
+      pending,
+    };
   }
 }

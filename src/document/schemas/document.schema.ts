@@ -1,7 +1,8 @@
-// src/document/schemas/document.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import mongoose from 'mongoose'; // ✅ aqui estava o erro
+import mongoose from 'mongoose';
+import { DocumentType } from 'src/document-type/schemas/document-type.schema';
+import { Employee } from 'src/employee/schemas/employee.schema';
 
 export type DocumentEntity = DocumentModel & Document;
 
@@ -12,14 +13,14 @@ export class DocumentModel {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee',
   })
-  employeeId: string;
+  employeeId: string | Employee;
 
   @Prop({
     required: true,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'DocumentType',
   })
-  documentTypeId: string;
+  documentTypeId: string | DocumentType;
 
   @Prop({ default: 'pendente' })
   status: string;
