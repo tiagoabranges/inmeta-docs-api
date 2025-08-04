@@ -10,6 +10,21 @@ export class DocumentType {
 
   @Prop()
   description: string;
+
+  @Prop()
+  createdAt?: Date;
+
+  @Prop()
+  updatedAt?: Date;
 }
 
 export const DocumentTypeSchema = SchemaFactory.createForClass(DocumentType);
+
+DocumentTypeSchema.set('toJSON', {
+  transform: (_doc, ret) => {
+    delete ret.__v;
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    return ret;
+  },
+});

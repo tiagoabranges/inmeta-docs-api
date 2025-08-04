@@ -24,6 +24,23 @@ export class DocumentModel {
 
   @Prop({ default: 'pendente' })
   status: string;
+
+  @Prop()
+  createdAt?: Date;
+
+  @Prop()
+  updatedAt?: Date;
 }
 
 export const DocumentSchema = SchemaFactory.createForClass(DocumentModel);
+
+DocumentSchema.set('toJSON', {
+  transform: (_doc, ret) => {
+    delete ret.__v;
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    return ret;
+  },
+});
+
+DocumentSchema.index({ employeeId: 1, documentTypeId: 1 }, { unique: true });
