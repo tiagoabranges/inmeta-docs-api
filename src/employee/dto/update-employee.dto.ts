@@ -1,18 +1,4 @@
-import { IsOptional, IsDateString } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { PartialType } from '@nestjs/swagger';
+import { CreateEmployeeDto } from './create-employee.dto';
 
-export class UpdateEmployeeDto {
-  @IsOptional()
-  name?: string;
-
-  @IsOptional()
-  email?: string;
-
-  @IsOptional()
-  cpf?: string;
-
-  @IsOptional()
-  @IsDateString()
-  @Transform(({ value }) => new Date(value))
-  hiredAt?: Date;
-}
+export class UpdateEmployeeDto extends PartialType(CreateEmployeeDto) {}

@@ -1,8 +1,4 @@
-// src/document/dto/update-document.dto.ts
-import { IsIn, IsOptional } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateDocumentDto } from './create-document.dto';
 
-export class UpdateDocumentDto {
-  @IsOptional()
-  @IsIn(['pendente', 'enviado'])
-  status?: string;
-}
+export class UpdateDocumentDto extends PartialType(CreateDocumentDto) {}

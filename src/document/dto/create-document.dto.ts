@@ -1,13 +1,24 @@
-import { IsMongoId, IsOptional, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateDocumentDto {
-  @IsMongoId()
+  @ApiProperty({ example: 'Documento de identidade' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ example: 'enviado', enum: ['pendente', 'enviado'] })
+  @IsString()
+  @IsNotEmpty()
+  status: string;
+
+  @ApiProperty({ example: '64cc7c1b8a3fabc123456789' })
+  @IsString()
+  @IsNotEmpty()
   employeeId: string;
 
-  @IsMongoId()
-  documentTypeId: string;
-
-  @IsOptional()
+  @ApiProperty({ example: '64cc7c1b8a3fabc123456799' })
   @IsString()
-  status?: string;
+  @IsNotEmpty()
+  documentTypeId: string;
 }

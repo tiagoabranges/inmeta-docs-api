@@ -1,7 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateDocumentTypeDto } from './create-document-type.dto';
 
-export class UpdateDocumentTypeDto {
-  @IsString()
-  @IsOptional()
-  name?: string;
-}
+export class UpdateDocumentTypeDto extends PartialType(CreateDocumentTypeDto) {}
