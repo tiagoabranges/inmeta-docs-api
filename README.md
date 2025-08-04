@@ -60,10 +60,9 @@ $ cd inmeta-docs-api
 # Instale as dependências
 $ npm install
 
-# Crie um arquivo .env (opcional, apenas se conectar com Mongo externo)
-
-# Suba o MongoDB com Docker, se preferir:
-$ docker run -d -p 27017:27017 --name document-mongo mongo
+# Crie um arquivo .env com a URI do seu MongoDB
+# Exemplo de conteúdo:
+# MONGO_URI=mongodb://localhost:27017/document-manager
 
 # Rode a aplicação
 $ npm run start:dev
