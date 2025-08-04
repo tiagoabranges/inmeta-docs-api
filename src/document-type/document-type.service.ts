@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   DocumentType,
@@ -25,16 +25,38 @@ export class DocumentTypeService {
   }
 
   async findById(id: string): Promise<DocumentType> {
-    return this.documentTypeModel.findById(id).exec();
+    const documentType = await this.documentTypeModel.findById(id).exec();
+    if (!documentType) {
+      throw new NotFoundException('Tipo de documento não encontrado');
+    }
+    return documentType;
   }
 
   async update(id: string, data: UpdateDocumentTypeDto): Promise<DocumentType> {
-    return this.documentTypeModel
-      .findByIdAndUpdate(id, data, { new: true })
+    const updated = await this.documentTypeModel
+      .findByIdAndUpdate(id, data, {
+        new: true,
+      })
       .exec();
+
+    if (!updated) {
+      throw new NotFoundException(
+        'Tipo de documento não encontrado para atualização',
+      );
+    }
+
+    return updated;
   }
 
-  async delete(id: string): Promise<DocumentType> {
-    return this.documentTypeModel.findByIdAndDelete(id).exec();
+  async delete(id: string): Promise<{ message: string }> {
+    const deleted = await this.documentTypeModel.findByIdAndDelete(id).exec();
+
+    if (!deleted) {
+      throw new NotFoundException(
+        'Tipo de documento não encontrado para exclusão',
+      );
+    }
+
+    return { message: 'Tipo de documento deletado com sucesso' };
   }
 }

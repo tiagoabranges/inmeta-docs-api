@@ -40,7 +40,7 @@ export class DocumentTypeController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<DocumentType> {
+  delete(@Param('id') id: string): Promise<{ message: string }> {
     return this.documentTypeService.delete(id);
   }
 }

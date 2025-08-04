@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Employee, EmployeeDocument } from './schemas/employee.schema';
@@ -25,22 +25,38 @@ export class EmployeeService {
     return this.employeeModel.find().exec();
   }
 
+  async findById(id: string): Promise<Employee> {
+    const employee = await this.employeeModel.findById(id).exec();
+    if (!employee) {
+      throw new NotFoundException('Colaborador não encontrado');
+    }
+    return employee;
+  }
+
   async update(id: string, data: UpdateEmployeeDto): Promise<Employee> {
     const updateData = {
       ...data,
       hiredAt: data.hiredAt ? new Date(data.hiredAt) : undefined,
     };
 
-    return this.employeeModel.findByIdAndUpdate(id, updateData, {
+    const updated = await this.employeeModel.findByIdAndUpdate(id, updateData, {
       new: true,
     });
+
+    if (!updated) {
+      throw new NotFoundException('Colaborador não encontrado para atualizar');
+    }
+
+    return updated;
   }
 
-  async findById(id: string): Promise<Employee> {
-    return this.employeeModel.findById(id).exec();
-  }
+  async delete(id: string): Promise<{ message: string }> {
+    const deleted = await this.employeeModel.findByIdAndDelete(id).exec();
 
-  async delete(id: string): Promise<void> {
-    await this.employeeModel.findByIdAndDelete(id).exec();
+    if (!deleted) {
+      throw new NotFoundException('Colaborador não encontrado para exclusão');
+    }
+
+    return { message: 'Colaborador deletado com sucesso' };
   }
 }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DocumentModel, DocumentEntity } from './schemas/document.schema';
 import { Model } from 'mongoose';
@@ -31,18 +31,46 @@ export class DocumentService {
   }
 
   async findByEmployee(employeeId: string): Promise<DocumentModel[]> {
-    return this.documentModel
+    const docs = await this.documentModel
       .find({ employeeId })
       .populate('documentTypeId')
       .exec();
+
+    if (!docs.length) {
+      throw new NotFoundException(
+        'Nenhum documento encontrado para este colaborador',
+      );
+    }
+
+    return docs;
   }
 
-  async updateStatus(id: string, status: UpdateDocumentDto['status']) {
-    return this.documentModel.findByIdAndUpdate(id, { status }, { new: true });
+  async updateStatus(
+    id: string,
+    status: UpdateDocumentDto['status'],
+  ): Promise<DocumentModel> {
+    const updated = await this.documentModel
+      .findByIdAndUpdate(id, { status }, { new: true })
+      .populate('employeeId')
+      .populate('documentTypeId');
+
+    if (!updated) {
+      throw new NotFoundException(
+        'Documento não encontrado para atualização de status',
+      );
+    }
+
+    return updated;
   }
 
-  async delete(id: string) {
-    return this.documentModel.findByIdAndDelete(id);
+  async delete(id: string): Promise<{ message: string }> {
+    const deleted = await this.documentModel.findByIdAndDelete(id).exec();
+
+    if (!deleted) {
+      throw new NotFoundException('Documento não encontrado para exclusão');
+    }
+
+    return { message: 'Documento deletado com sucesso' };
   }
 
   async getStatusByEmployee(employeeId: string) {
@@ -50,6 +78,12 @@ export class DocumentService {
       .find({ employeeId })
       .populate('documentTypeId')
       .exec();
+
+    if (!documents.length) {
+      throw new NotFoundException(
+        'Nenhum documento registrado para este colaborador',
+      );
+    }
 
     const sentTypes = documents
       .filter((doc) => doc.status === 'enviado')
@@ -110,6 +144,10 @@ export class DocumentService {
 
       this.documentModel.countDocuments(filters),
     ]);
+
+    if (!data.length) {
+      throw new NotFoundException('Nenhum documento pendente encontrado');
+    }
 
     return {
       data,
