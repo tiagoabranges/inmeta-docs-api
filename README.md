@@ -1,8 +1,8 @@
-# 📁 Document Manager API - NestJS
+# 📁 Inmeta Document API - NestJS
 
 ## 💡 Descrição
 
-O **Document Manager API** é uma aplicação RESTful desenvolvida com **NestJS** e **MongoDB**, que tem como objetivo gerenciar colaboradores, tipos de documentos e os documentos enviados por eles. Inspirado em necessidades reais de controle de documentação interna, o sistema permite criar regras dinâmicas sobre quais documentos são obrigatórios por colaborador, consultar o status de envio e realizar a gestão completa de registros.
+O **Inmeta Document API** é uma aplicação RESTful desenvolvida com **NestJS** e **MongoDB**, que tem como objetivo gerenciar colaboradores, tipos de documentos e os documentos enviados por eles. Inspirado em necessidades reais de controle de documentação interna, o sistema permite criar regras dinâmicas sobre quais documentos são obrigatórios por colaborador, consultar o status de envio e realizar a gestão completa de registros.
 
 ---
 
@@ -55,7 +55,7 @@ Todos os endpoints estão documentados com Swagger e podem ser acessados após r
 $ git clone https://github.com/seuusuario/document-manager.git
 
 # Acesse o projeto
-$ cd document-manager
+$ cd inmeta-docs-api
 
 # Instale as dependências
 $ npm install
@@ -197,9 +197,3 @@ LinkedIn – Tiago Abranges
 
 📝 Licença
 Desenvolvido com 💙 por Tiago Abranges
-
-nginx
-Copiar
-Editar
-
-Se quiser, posso gerar esse arquivo e te enviar para download. Deseja?
