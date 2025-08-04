@@ -52,7 +52,7 @@ Todos os endpoints estão documentados com Swagger e podem ser acessados após r
 
 ```bash
 # Clone o repositório
-$ git clone https://github.com/seuusuario/document-manager.git
+$ git clone git@github.com:tiagoabranges/inmeta-docs-api.git
 
 # Acesse o projeto
 $ cd inmeta-docs-api
