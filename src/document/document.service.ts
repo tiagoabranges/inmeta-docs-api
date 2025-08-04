@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DocumentModel, DocumentEntity } from './schemas/document.schema';
 import { Model } from 'mongoose';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
+import { GetPendingDocumentsDto } from './dto/get-pending-documents.dto';
 
 @Injectable()
 export class DocumentService {
@@ -31,14 +33,6 @@ export class DocumentService {
   async findByEmployee(employeeId: string): Promise<DocumentModel[]> {
     return this.documentModel
       .find({ employeeId })
-      .populate('documentTypeId')
-      .exec();
-  }
-
-  async findPending(): Promise<DocumentModel[]> {
-    return this.documentModel
-      .find({ status: { $ne: 'enviado' } })
-      .populate('employeeId')
       .populate('documentTypeId')
       .exec();
   }
@@ -91,6 +85,38 @@ export class DocumentService {
       employeeId,
       sent: uniqueSent,
       pending,
+    };
+  }
+
+  async findPending(query: GetPendingDocumentsDto) {
+    const { employeeId, documentTypeId, page = '1', limit = '10' } = query;
+
+    const filters: any = { status: { $ne: 'enviado' } };
+
+    if (employeeId) filters.employeeId = employeeId;
+    if (documentTypeId) filters.documentTypeId = documentTypeId;
+
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+
+    const [data, total] = await Promise.all([
+      this.documentModel
+        .find(filters)
+        .populate('employeeId')
+        .populate('documentTypeId')
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .exec(),
+
+      this.documentModel.countDocuments(filters),
+    ]);
+
+    return {
+      data,
+      total,
+      page: pageNum,
+      limit: limitNum,
+      pages: Math.ceil(total / limitNum),
     };
   }
 }
