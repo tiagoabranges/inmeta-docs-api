@@ -12,11 +12,12 @@ export class EmployeeService {
   ) {}
 
   async create(data: CreateEmployeeDto): Promise<Employee> {
-    const newEmployee = new this.employeeModel({
+    const transformed = {
       ...data,
       hiredAt: data.hiredAt ? new Date(data.hiredAt) : undefined,
-    });
+    };
 
+    const newEmployee = new this.employeeModel(transformed);
     return newEmployee.save();
   }
 
