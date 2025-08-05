@@ -77,21 +77,30 @@ http://localhost:3000/api
 
 ```bash
 src/
+├── common/
+│   ├── filters/
+│   │   └── http-exception.filter.ts      # Filtro global de tratamento de exceções
+│   └── middlewares/
+│       └── logger.middleware.ts          # Middleware para log de requisições
+│
 ├── employee/
 │   ├── employee.controller.ts
 │   ├── employee.service.ts
 │   ├── dto/
 │   └── schemas/
+│
 ├── document-type/
 │   ├── document-type.controller.ts
 │   ├── document-type.service.ts
 │   ├── dto/
 │   └── schemas/
+│
 ├── document/
 │   ├── document.controller.ts
 │   ├── document.service.ts
 │   ├── dto/
 │   └── schemas/
+│
 ├── app.module.ts
 ├── main.ts
 
