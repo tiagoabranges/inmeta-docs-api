@@ -42,35 +42,57 @@ Todos os endpoints estão documentados com Swagger e podem ser acessados após r
 ---
 
 ## 📦 Como rodar o projeto
-
 ### 🔧 Pré-requisitos
-
 - Node.js ≥ 18.x
 - MongoDB local ou Docker
-
 ### 💻 Rodando localmente
-
 ```bash
 # Clone o repositório
-$ git clone git@github.com:tiagoabranges/inmeta-docs-api.git
+git clone git@github.com:tiagoabranges/inmeta-docs-api.git
 
 # Acesse o projeto
-$ cd inmeta-docs-api
+cd inmeta-docs-api
 
 # Instale as dependências
-$ npm install
-
-# Crie um arquivo .env com a URI do seu MongoDB
-# Exemplo de conteúdo:
-# MONGO_URI=mongodb://localhost:27017/document-manager
-
-# Rode a aplicação
-$ npm run start:dev
-
-# Acesse a documentação
-http://localhost:3000/api
-
+npm install
 ```
+## 🛠️ Configurando o MongoDB
+A aplicação utiliza o MongoDB como banco de dados. Você pode rodá-lo **localmente** ou utilizando **Docker**, conforme sua preferência.
+### 🔌 Opção 1 – MongoDB local
+Se você já tem o MongoDB instalado em sua máquina, utilize a seguinte URI no seu arquivo `.env`:
+```env
+MONGO_URI=mongodb://localhost:27017/inmeta-docs
+```
+### 🐳 Opção 2 – MongoDB com Docker
+Se não quiser instalar o MongoDB, você pode rodar um container com o seguinte comando:
+```bash
+docker run -d \
+  --name inmeta-mongo \
+  -p 27017:27017 \
+  -v mongodbdata:/data/db \
+  mongo
+```
+Esse comando:
+- Cria um container chamado `inmeta-mongo`
+- Usa a porta padrão do MongoDB (27017)
+- Salva os dados no volume persistente `mongodbdata`
+Depois disso, utilize a mesma URI no `.env`:
+```env
+MONGO_URI=mongodb://localhost:27017/inmeta-docs
+```
+Crie seu arquivo `.env` copiando o modelo:
+```bash
+cp .env.example .env
+```
+### ▶️ Rode a aplicação
+```bash
+npm run start:dev
+```
+### 📘 Acesse a documentação
+```
+http://localhost:3000/api
+```
+
 
 ## ✨ Estrutura da aplicação
 
@@ -200,8 +222,7 @@ refactor: melhorias internas
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues, pull requests ou sugerir melhorias.
 
 🐛 Encontrou um problema?
-Me avise por aqui:
-LinkedIn – Tiago Abranges
+📬 Me avise por aqui no LinkedIn: [Tiago Abranges](https://www.linkedin.com/in/tiagoabranges/)
 
 📝 Licença
 Desenvolvido com 💙 por Tiago Abranges
