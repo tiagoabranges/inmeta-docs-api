@@ -1,4 +1,3 @@
-// src/app.module.ts
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
